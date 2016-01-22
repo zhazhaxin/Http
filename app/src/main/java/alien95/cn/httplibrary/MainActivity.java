@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
         httpPostRequest();
         smallImage.setImageUrl(IMAGE_SMALL_URL);
         bigImage.setImageUrl(IMAGE_BIG_URL);
-
-
     }
 
 

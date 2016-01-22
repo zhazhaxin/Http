@@ -6,9 +6,10 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import alien95.cn.http.R;
 import alien95.cn.http.image.HttpRequestImage;
 import alien95.cn.http.image.ImageCallBack;
-import alien95.cn.http.R;
+
 
 /**
  * Created by linlongxin on 2015/12/31.
@@ -37,7 +38,7 @@ public class HttpImageView extends ImageView {
         inSimpleSize = typedArray.getInteger(R.styleable.HttpImageView_compressSize, 1);
         loadImageId = typedArray.getResourceId(R.styleable.HttpImageView_loadImage, -1);
         failedImageId = typedArray.getResourceId(R.styleable.HttpImageView_failedImage, -1);
-        typedArray.recycle();  //避免重用
+        typedArray.recycle();
     }
 
     /**
@@ -46,9 +47,10 @@ public class HttpImageView extends ImageView {
      * @param url
      */
     public void setImageUrl(String url) {
-        if (loadImageId != -1)
+        if (loadImageId != -1) {
             setImageResource(loadImageId);
-        HttpRequestImage.getInstance().requestImageWithCompress(url, inSimpleSize, new ImageCallBack() {
+        }
+        HttpRequestImage.getInstance().requestImageWithCompress(url,inSimpleSize, new ImageCallBack() {
             @Override
             public void success(Bitmap bitmap) {
                 setImageBitmap(bitmap);
@@ -72,8 +74,9 @@ public class HttpImageView extends ImageView {
         if (inSimpleSize < 1) {
             throw new IllegalArgumentException("inSimpleSize must greater than one");
         }
-        if (loadImageId != -1)
+        if (loadImageId != -1) {
             setImageResource(loadImageId);
+        }
         HttpRequestImage.getInstance().requestImageWithCompress(url, inSimpleSize, new ImageCallBack() {
             @Override
             public void success(Bitmap bitmap) {
@@ -88,26 +91,14 @@ public class HttpImageView extends ImageView {
         });
     }
 
-    /**
-     * 设置图片压缩参数
-     * @param inSimpleSize
-     */
     public void setInSimpleSize(int inSimpleSize) {
         this.inSimpleSize = inSimpleSize;
     }
 
-    /**
-     * 设置加载失败图片ID
-     * @param failedImageId
-     */
     public void setFailedImageId(int failedImageId) {
         this.failedImageId = failedImageId;
     }
 
-    /**
-     * 设置加载时图片的ID
-     * @param loadImageId
-     */
     public void setLoadImageId(int loadImageId) {
         this.loadImageId = loadImageId;
     }

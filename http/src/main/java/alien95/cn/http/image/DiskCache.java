@@ -11,12 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import alien95.cn.http.request.HttpQueue;
 import alien95.cn.util.Utils;
-
 
 /**
  * Created by linlongxin on 2015/12/29.
@@ -52,37 +48,29 @@ public class DiskCache {
 
     /**
      * 写入缓存到硬盘
-     *
      * @param imageUrl 图片地址
+     * @param bitmap
      */
-    public void writeImageToDisk(final String imageUrl) {
+    public void writeImageToDisk(String imageUrl, final Bitmap bitmap) {
         final String key = Utils.MD5(imageUrl);
         if (readImageFromDisk(imageUrl) != null) {
             return;
         }
-        HttpQueue.getInstance().addQuest(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    HttpURLConnection urlConnection = (HttpURLConnection) new URL(imageUrl).openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    InputStream in = urlConnection.getInputStream();
-                    DiskLruCache.Editor editor;
-                    editor = diskLruCache.edit(key);
-                    if (editor != null) {
-                        OutputStream outputStream = editor.newOutputStream(0);
-                        if (loadImageToStream(in, outputStream)) {
-                            editor.commit();
-                        } else {
-                            editor.abort();
-                        }
-                    }
-                    diskLruCache.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        DiskLruCache.Editor editor;
+        try {
+            editor = diskLruCache.edit(key);
+            if (editor != null) {
+                OutputStream outputStream = editor.newOutputStream(0);
+                boolean success = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                if (success) {
+                    editor.commit();
+                } else {
+                    editor.abort();
                 }
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
