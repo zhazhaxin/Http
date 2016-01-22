@@ -4,12 +4,9 @@
 
 Demo:
 
-GET请求：
+GET，POST请求：
 
 <img src="img_get.png" width="320" height="569" alt="GET "/>
-
-POST请求：
-
 <img src="img_post.png" width="320" height="569" alt="POST"/>
 
 图片加载（第一张小图，第二张大图）：
