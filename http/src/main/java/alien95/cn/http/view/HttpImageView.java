@@ -37,6 +37,7 @@ public class HttpImageView extends ImageView {
         inSimpleSize = typedArray.getInteger(R.styleable.HttpImageView_compressSize, 1);
         loadImageId = typedArray.getResourceId(R.styleable.HttpImageView_loadImage, -1);
         failedImageId = typedArray.getResourceId(R.styleable.HttpImageView_failedImage, -1);
+        typedArray.recycle();  //避免重用
     }
 
     /**

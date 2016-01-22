@@ -39,7 +39,7 @@ public class HttpRequestImage {
         return instance;
     }
 
-    public void requestImage(String url, ImageCallBack callBack) {
+    public synchronized void requestImage(String url, ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));
@@ -58,7 +58,7 @@ public class HttpRequestImage {
      * @param url
      * @param callBack
      */
-    public void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
+    public synchronized void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));

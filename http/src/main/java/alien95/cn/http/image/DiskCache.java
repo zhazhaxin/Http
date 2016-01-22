@@ -57,6 +57,9 @@ public class DiskCache {
      */
     public void writeImageToDisk(final String imageUrl) {
         final String key = Utils.MD5(imageUrl);
+        if (readImageFromDisk(imageUrl) != null) {
+            return;
+        }
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
