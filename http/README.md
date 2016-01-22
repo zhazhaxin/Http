@@ -8,7 +8,7 @@
 
 - GET,POST请求
 
-get请求：
+(1)get请求：
 
         HttpRequest.getInstance().get(GET_URL, new HttpCallBack() {
                     @Override
@@ -17,7 +17,7 @@ get请求：
                     }
                 });
 
-post请求：
+(2)post请求：
 
          public void httpPostRequest() {
                 Map<String, String> params = new HashMap<>();
@@ -31,9 +31,13 @@ post请求：
                 });
             }
 
+(3)添加header
+
+        public void setHttpHeader(Map<String, String> header);
+
 - 图片加载（包括了内存缓存和硬盘缓存）
 
-加载小图：
+(1)加载小图：
 
          <alien95.cn.http.view.HttpImageView
                     android:id="@+id/small_image"
@@ -47,7 +51,7 @@ post请求：
 
         smallImage.setImageUrl(IMAGE_SMALL_URL);    设置一个图片地址就好了。                                       
 
-加载大图时可以进行图片压缩处理：
+(2)加载大图时可以进行图片压缩处理：
 
          <alien95.cn.http.view.HttpImageView
                     android:id="@+id/big_image"

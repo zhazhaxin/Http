@@ -4,10 +4,8 @@
 
 Demo:
 
-![GET]()
+![GET](/img_get.png)
 
-![POST]()
+![POST](/img_post.png)
 
-![Image-小图]()
-
-![Image-大图]()
+![Image-小图第一张---大图第二张（压缩参数为2，大小变成原来得1/4）](/img_image.png)
