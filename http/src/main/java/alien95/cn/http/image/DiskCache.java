@@ -30,7 +30,7 @@ public class DiskCache {
                 cacheDir.mkdirs();
             }
             //20MB硬盘缓存
-            diskLruCache = DiskLruCache.open(cacheDir, Utils.getAppVersion(), 1, 10 * 1024 * 1024);
+            diskLruCache = DiskLruCache.open(cacheDir, Utils.getAppVersion(), 1, 30 * 1024 * 1024);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,6 +48,7 @@ public class DiskCache {
 
     /**
      * 写入缓存到硬盘
+     *
      * @param imageUrl 图片地址
      * @param bitmap
      */
