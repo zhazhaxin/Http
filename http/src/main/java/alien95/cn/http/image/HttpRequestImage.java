@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import alien95.cn.http.image.callback.DiskCallback;
 import alien95.cn.http.request.HttpQueue;
 import alien95.cn.http.util.DebugUtils;
 
@@ -39,16 +40,23 @@ public class HttpRequestImage {
         return instance;
     }
 
-    public void requestImage(String url, ImageCallBack callBack) {
+    public void requestImage(final String url, final ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));
-        } else if (loadImageFromDisk(url) != null) {
-            Log.i(TAG, "Get Picture from diskCache");
-            callBack.success(loadImageFromDisk(url));
         } else {
-            Log.i(TAG, "Get Picture from the network");
-            loadImageFromNet(url, callBack);
+            loadImageFromDisk(url, new DiskCallback() {
+                @Override
+                public void callback(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        Log.i(TAG, "Get Picture from diskCache");
+                        callBack.success(bitmap);
+                    } else {
+                        Log.i(TAG, "Get Picture from the network");
+                        loadImageFromNet(url, callBack);
+                    }
+                }
+            });
         }
     }
 
@@ -57,9 +65,10 @@ public class HttpRequestImage {
      * 图片压缩处理的时候内存缓存和硬盘缓存的key是通过url+inSampleSize 通过MD5加密的
      *
      * @param url
+     * @param  inSampleSize
      * @param callBack
      */
-    public synchronized void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
+    public synchronized void requestImageWithCompress(final String url, final int inSampleSize, final ImageCallBack callBack) {
         if (inSampleSize <= 1) {
             requestImage(url, callBack);
             return;
@@ -67,13 +76,21 @@ public class HttpRequestImage {
         if (loadImageFromMemory(url + inSampleSize) != null) {
             Log.i(TAG, "Compress Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url + inSampleSize));
-        } else if (loadImageFromDisk(url + inSampleSize) != null) {
-            Log.i(TAG, "Compress Get Picture from diskCache");
-            callBack.success(loadImageFromDisk(url + inSampleSize));
         } else {
-            Log.i(TAG, "Compress Get Picture from the network");
-            loadImageFromNetWithCompress(url, inSampleSize, callBack);
+            loadImageFromDisk(url + inSampleSize, new DiskCallback() {
+                @Override
+                public void callback(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        Log.i(TAG, "Compress Get Picture from diskCache");
+                        callBack.success(bitmap);
+                    } else {
+                        Log.i(TAG, "Compress Get Picture from the network");
+                        loadImageFromNetWithCompress(url, inSampleSize, callBack);
+                    }
+                }
+            });
         }
+
     }
 
     /**
@@ -90,10 +107,11 @@ public class HttpRequestImage {
      * 从硬盘缓存中读取图片
      *
      * @param imageUrl
+     * @param callback
      * @return
      */
-    public Bitmap loadImageFromDisk(String imageUrl) {
-        return DiskCache.getInstance().readImageFromDisk(imageUrl);
+    public void loadImageFromDisk(String imageUrl, DiskCallback callback) {
+        DiskCache.getInstance().readImageFromDisk(imageUrl, callback);
     }
 
     public HttpURLConnection getHttpUrlConnection(String url) {

@@ -21,7 +21,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.jakewharton:disklrucache:2.0.2'
-    compile 'cn.alien95:util:1.0.1'
+    compile 'cn.alien95:util:1.0.3'
 }
 
 
@@ -35,7 +35,7 @@ ext {
     siteUrl = 'https://github.com/llxdaxia/Http'
     gitUrl = 'https://github.com/llxdaxia/Http.git'
 
-    libraryVersion = '1.0.3'//版本号
+    libraryVersion = '1.0.5'//版本号
     libraryName = 'Http'//项目名字，没什么用
     libraryDescription = 'A network framework for Android'//项目描述，没什么用
 
