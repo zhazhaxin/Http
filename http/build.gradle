@@ -21,7 +21,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.jakewharton:disklrucache:2.0.2'
-    compile 'cn.alien95:util:1.0.0'
+    compile 'cn.alien95:util:1.0.1'
 }
 
 
