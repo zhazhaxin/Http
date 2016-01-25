@@ -1,5 +1,9 @@
 ##基于HttpUrlConnection网络框架
 
+- 依赖
+
+        compile 'cn.alien95:http:1.0.3'
+
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
 
         if(BuildConfig.DEBUG){
