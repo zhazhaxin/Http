@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import alien95.cn.http.request.callback.HttpCallBack;
 import alien95.cn.http.util.DebugUtils;
 
 
@@ -20,6 +21,7 @@ import alien95.cn.http.util.DebugUtils;
  */
 public class HttpConnection {
 
+    public static final int NO_NETWORK = 999;
     private static HttpConnection instance;
     private HttpURLConnection urlConnection;
     private Handler handler = new Handler();
@@ -143,7 +145,7 @@ public class HttpConnection {
                 @Override
                 public void run() {
                     if (callback != null) {
-                        callback.error();
+                        callback.failure(NO_NETWORK, "抛出异常,没有连接网络");
                         callback.getRequestTimes("抛出异常：" + e1.getMessage(), DebugUtils.requestTimes - 1);
                     }
                 }

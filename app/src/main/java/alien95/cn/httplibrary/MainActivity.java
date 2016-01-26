@@ -7,7 +7,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.Map;
 
-import alien95.cn.http.request.HttpCallBack;
+import alien95.cn.http.request.callback.HttpCallBack;
 import alien95.cn.http.request.HttpRequest;
 import alien95.cn.http.view.HttpImageView;
 

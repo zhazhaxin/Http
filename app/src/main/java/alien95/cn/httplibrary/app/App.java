@@ -2,7 +2,7 @@ package alien95.cn.httplibrary.app;
 
 import android.app.Application;
 
-import alien95.cn.http.request.HttpRequest;
+import alien95.cn.http.request.Http;
 import alien95.cn.httplibrary.BuildConfig;
 import alien95.cn.util.Utils;
 
@@ -16,7 +16,7 @@ public class App extends Application {
 
         Utils.initialize(this);
         if(BuildConfig.DEBUG){
-            HttpRequest.setDebug(true,"NetWork");
+            Http.setDebug(true,"NetWork");
         }
     }
 }

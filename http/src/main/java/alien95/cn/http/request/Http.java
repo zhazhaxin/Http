@@ -2,6 +2,7 @@ package alien95.cn.http.request;
 
 import java.util.Map;
 
+import alien95.cn.http.request.callback.HttpCallBack;
 import alien95.cn.http.util.DebugUtils;
 
 /**

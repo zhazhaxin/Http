@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.Map;
 
+import alien95.cn.http.request.callback.HttpCallBack;
+
 
 /**
  * Created by linlongxin on 2015/12/26.
