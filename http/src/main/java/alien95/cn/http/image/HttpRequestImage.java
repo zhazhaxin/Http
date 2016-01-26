@@ -29,6 +29,11 @@ public class HttpRequestImage {
         handler = new Handler();
     }
 
+    /**
+     * 获取一个HttpRequestImage实例，这里是单例模式
+     *
+     * @return
+     */
     public static HttpRequestImage getInstance() {
         if (instance == null) {
             synchronized (HttpRequestImage.class) {
@@ -40,6 +45,12 @@ public class HttpRequestImage {
         return instance;
     }
 
+    /**
+     * 从网络请求图片
+     *
+     * @param url      图片的网络地址
+     * @param callBack 回调接口
+     */
     public void requestImage(final String url, final ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
