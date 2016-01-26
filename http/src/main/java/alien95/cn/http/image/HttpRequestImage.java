@@ -65,7 +65,7 @@ public class HttpRequestImage {
      * 图片压缩处理的时候内存缓存和硬盘缓存的key是通过url+inSampleSize 通过MD5加密的
      *
      * @param url
-     * @param  inSampleSize
+     * @param inSampleSize
      * @param callBack
      */
     public synchronized void requestImageWithCompress(final String url, final int inSampleSize, final ImageCallBack callBack) {
@@ -108,7 +108,6 @@ public class HttpRequestImage {
      *
      * @param imageUrl
      * @param callback
-     * @return
      */
     public void loadImageFromDisk(String imageUrl, DiskCallback callback) {
         DiskCache.getInstance().readImageFromDisk(imageUrl, callback);

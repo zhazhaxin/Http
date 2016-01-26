@@ -89,8 +89,6 @@ public class DiskCache {
      *
      * @param imageUrl 图片地址
      * @param callback
-     *
-     * @return
      */
     public void readImageFromDisk(String imageUrl, final DiskCallback callback) {
         final String key = Utils.MD5(imageUrl);
@@ -124,7 +122,6 @@ public class DiskCache {
      *
      * @param in
      * @param outputStream
-     *
      * @return
      */
     public boolean loadImageToStream(InputStream in, OutputStream outputStream) {
