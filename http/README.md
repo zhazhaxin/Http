@@ -84,9 +84,9 @@ Demo:
 
 GET，POST请求：
 
-<img src="./app/img_get.png" width="320" height="569" alt="GET "/>
-<img src="./app/img_post.png" width="320" height="569" alt="POST"/>
+<img src="../app/img_get.png" width="320" height="569" alt="GET "/>
+<img src="../app/img_post.png" width="320" height="569" alt="POST"/>
 
 图片加载（第一张小图，第二张大图）：
 
-<img src="./app/img_image.png" width="320" height="569" />           
+<img src="../app/img_image.png" width="320" height="569" />           
