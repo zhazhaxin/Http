@@ -2,7 +2,7 @@
 
 - 依赖
 
-        compile 'cn.alien95:http:1.1.2'
+        compile 'cn.alien95:http:1.1.3'
 
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
 
@@ -76,10 +76,17 @@
 
 - 注意事项：
 
-由于依赖了[Util库](https://github.com/llxdaxia/Utils)，所以使用的时候务必加上：
+还依赖了其他库(避免重复依赖)：
 
-        Utils.initialize(this);
-        
-还依赖了其他库：
+        compile 'com.jakewharton:disklrucache:2.0.2'    
+           
+Demo:
 
-        compile 'com.jakewharton:disklrucache:2.0.2'       
+GET，POST请求：
+
+<img src="img_get.png" width="320" height="569" alt="GET "/>
+<img src="img_post.png" width="320" height="569" alt="POST"/>
+
+图片加载（第一张小图，第二张大图）：
+
+<img src="img_image.png" width="320" height="569" alt="Image-小图第一张---大图第二张（压缩参数为2，大小变成原来得1/4"/>           

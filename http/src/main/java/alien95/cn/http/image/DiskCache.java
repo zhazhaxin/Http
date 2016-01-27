@@ -15,7 +15,7 @@ import java.io.OutputStream;
 
 import alien95.cn.http.image.callback.DiskCallback;
 import alien95.cn.http.request.HttpQueue;
-import alien95.cn.util.Utils;
+import alien95.cn.http.util.Utils;
 
 /**
  * Created by linlongxin on 2015/12/29.

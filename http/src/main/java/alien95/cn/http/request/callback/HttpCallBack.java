@@ -3,7 +3,7 @@ package alien95.cn.http.request.callback;
 
 import alien95.cn.http.request.HttpConnection;
 import alien95.cn.http.util.DebugUtils;
-import alien95.cn.util.Utils;
+import alien95.cn.http.util.Utils;
 
 /**
  * Created by linlongxin on 2015/12/26.

@@ -1,7 +1,5 @@
 package alien95.cn.http.request;
 
-import android.support.annotation.NonNull;
-
 import java.util.Map;
 
 import alien95.cn.http.request.callback.HttpCallBack;
@@ -69,7 +67,7 @@ public class HttpRequest extends Http {
      * @param callBack 回调接口
      */
     @Override
-    public void post(final String url, final Map<String, String> params, @NonNull final HttpCallBack callBack) {
+    public void post(final String url, final Map<String, String> params, final HttpCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
