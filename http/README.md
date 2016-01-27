@@ -6,10 +6,10 @@
 
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
 
+        Http.initialize(this);
         if(BuildConfig.DEBUG){
                     HttpRequest.setDebug(true,"NetWork");
                 }
-
 - GET,POST请求
 
 (1)get请求：
