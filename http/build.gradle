@@ -34,7 +34,7 @@ ext {
     siteUrl = 'https://github.com/llxdaxia/Http'
     gitUrl = 'https://github.com/llxdaxia/Http.git'
 
-    libraryVersion = '1.1.3'//版本号
+    libraryVersion = '1.1.4'//版本号
     libraryName = 'Http'//项目名字，没什么用
     libraryDescription = 'A network framework for Android'//项目描述，没什么用
 

@@ -25,11 +25,11 @@ public class DebugUtils {
         }
     }
 
-    public static synchronized void requestLog(String info) {
+    public static synchronized int requestLog(String info) {
         if (isDebug) {
             Log.i(DEBUG_TAG, requestTimes + " times Quest:" + info);
-            requestTimes++;
         }
+        return requestTimes++;
     }
 
     public static synchronized void responseLog(String info, int requestNum) {

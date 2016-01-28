@@ -70,6 +70,8 @@ public class HttpConnection {
 
         logUrl = url;
         final int respondCode;
+        //打印请求日志
+        final int requestTime = DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
         try {
             urlConnection = (HttpURLConnection) new URL(url).openConnection();
             urlConnection.setDoOutput(true);
@@ -105,9 +107,6 @@ public class HttpConnection {
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
 
-            //打印请求日志
-            DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
-
             //请求失败
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();
@@ -120,7 +119,7 @@ public class HttpConnection {
                     public void run() {
                         if (callback != null) {
                             callback.failure(finalRespondCode, info);
-                            callback.getRequestTimes(respondCode, info, DebugUtils.requestTimes - 1);
+                            callback.getRequestTimes(respondCode, info, requestTime);
                         }
                     }
                 });
@@ -133,7 +132,7 @@ public class HttpConnection {
                     public void run() {
                         if (callback != null) {
                             callback.success(result);
-                            callback.getRequestTimes(respondCode, result, DebugUtils.requestTimes - 1);
+                            callback.getRequestTimes(respondCode, result, requestTime);
                         }
                     }
                 });
@@ -146,7 +145,7 @@ public class HttpConnection {
                 public void run() {
                     if (callback != null) {
                         callback.failure(NO_NETWORK, "抛出异常,没有连接网络");
-                        callback.getRequestTimes("抛出异常：" + e1.getMessage(), DebugUtils.requestTimes - 1);
+                        callback.getRequestTimes("抛出异常：" + e1.getMessage(), requestTime);
                     }
                 }
             });
