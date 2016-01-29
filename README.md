@@ -2,7 +2,7 @@
 
 - 依赖
 
-        compile 'cn.alien95:http:1.1.3'
+        compile 'cn.alien95:http:1.1.4'
 
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
     
