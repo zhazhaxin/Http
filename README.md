@@ -8,7 +8,7 @@
     
         Http.initialize(this);
         if(BuildConfig.DEBUG){
-                    HttpRequest.setDebug(true,"NetWork");
+                    Http.setDebug(true,"NetWork");
                 }
 
 - GET,POST请求
