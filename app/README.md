@@ -15,4 +15,4 @@ GET，POST请求：
 
 日志打印輸出：
 
-<img src="log.png" width="320" height="569"/>
+<img src="log.png" width="800" height="300"/>
