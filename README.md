@@ -85,8 +85,6 @@
 
 [美图APP](https://github.com/llxdaxia/Mito)
 
-Demo:
-
 GET，POST请求：
 
 <img src="/app/img_get.png" width="320" height="569" alt="GET "/>
