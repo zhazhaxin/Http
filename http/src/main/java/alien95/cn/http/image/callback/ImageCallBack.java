@@ -1,4 +1,4 @@
-package alien95.cn.http.image;
+package alien95.cn.http.image.callback;
 
 import android.graphics.Bitmap;
 

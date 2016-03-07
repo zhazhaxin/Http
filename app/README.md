@@ -12,3 +12,7 @@ GET，POST请求：
 图片加载（第一张小图，第二张大图）：
 
 <img src="img_image.png" width="320" height="569"/>
+
+日志打印輸出：
+
+<img src="log.png" width="320" height="569"/>

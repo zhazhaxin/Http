@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import alien95.cn.http.R;
 import alien95.cn.http.image.HttpRequestImage;
-import alien95.cn.http.image.ImageCallBack;
+import alien95.cn.http.image.callback.ImageCallBack;
 
 
 /**

@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import alien95.cn.http.image.callback.DiskCallback;
+import alien95.cn.http.image.callback.ImageCallBack;
 import alien95.cn.http.request.HttpQueue;
 import alien95.cn.http.util.DebugUtils;
 
