@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -106,6 +107,37 @@ public class HttpRequestImage {
     }
 
     /**
+     * 压缩加载图片
+     *
+     * @param url
+     * @param reqWidth
+     * @param reqHeight
+     * @param callBack
+     */
+    public synchronized void requestImageWithCompress(final String url, final int reqWidth, final int reqHeight, final ImageCallBack callBack) {
+        String key = url + reqWidth + reqHeight;
+        if (loadImageFromMemory(key) != null) {
+            Log.i(TAG, "Compress Get Picture from memoryCache");
+            callBack.success(loadImageFromMemory(key));
+        } else {
+            loadImageFromDisk(key, new DiskCallback() {
+                @Override
+                public void callback(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        Log.i(TAG, "Compress Get Picture from diskCache");
+                        callBack.success(bitmap);
+                    } else {
+                        Log.i(TAG, "Compress Get Picture from the network");
+                        loadImageFromNetWithCompress(url, reqWidth, reqHeight, callBack);
+                    }
+                }
+            });
+        }
+
+    }
+
+
+    /**
      * 从内存缓存中获取已经从网络获取过的图片
      *
      * @param key
@@ -197,6 +229,7 @@ public class HttpRequestImage {
                     respondCode = urlConnection.getResponseCode();
                     if (respondCode == HttpURLConnection.HTTP_OK) {
                         final Bitmap compressBitmap = ImageUtils.compressBitmapFromInputStream(inputStream, inSampleSize);
+                        inputStream.close();
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -213,6 +246,69 @@ public class HttpRequestImage {
                 }
             }
         });
+    }
+
+    public synchronized void loadImageFromNetWithCompress(final String url, final int reqWidth, final int reqHeight, final ImageCallBack callBack) {
+        HttpQueue.getInstance().addQuest(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection urlConnection = getHttpUrlConnection(url);
+                int respondCode;
+                try {
+                    final InputStream inputStream = urlConnection.getInputStream();
+                    respondCode = urlConnection.getResponseCode();
+                    if (respondCode == HttpURLConnection.HTTP_OK) {
+                        final BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+
+                        //如果两次都调用BitmapFactory.decodeStream,由于输入流失有序的输入流，第二次会得到null
+                        byte[] bytes = new byte[0];
+                        try {
+                            bytes = readStream(inputStream);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        options.inSampleSize = ImageUtils.calculateInSampleSize(options, reqWidth, reqHeight);
+                        options.inJustDecodeBounds = false;
+
+                        final Bitmap compressBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callBack.success(compressBitmap);
+                                if (compressBitmap != null) {
+                                    MemoryCache.getInstance().putBitmapToCache(url + reqWidth + reqHeight, compressBitmap);
+                                    DiskCache.getInstance().writeImageToDisk(url + reqWidth + reqHeight, compressBitmap);
+                                }
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 从inputStream中获取字节流 数组大小
+     *
+     * @param inStream
+     * @return
+     * @throws Exception
+     */
+    public byte[] readStream(InputStream inStream) throws Exception {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while ((len = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);
+        }
+        outStream.close();
+        inStream.close();
+        return outStream.toByteArray();
     }
 
 }

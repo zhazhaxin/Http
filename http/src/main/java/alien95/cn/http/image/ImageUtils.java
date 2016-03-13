@@ -26,6 +26,22 @@ public class ImageUtils {
     }
 
     /**
+     * 压缩图片通过要求的宽和高
+     * @param inputStream
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static Bitmap compressBitmapFromInputStream(InputStream inputStream, int reqWidth,int reqHeight){
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(inputStream, null, options);
+        options.inSampleSize = calculateInSampleSize(options,reqWidth,reqHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(inputStream,null,options);
+    }
+
+    /**
      * 压缩Bitmap
      * @param bitmap
      * @param size 大小应该时KB为单位
@@ -63,7 +79,7 @@ public class ImageUtils {
      * @param reqHeight 需要设置的高
      * @return int 返回一个inSampleSize值来压缩图片
      */
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // 源图片的高度和宽度
         final int height = options.outHeight;
         final int width = options.outWidth;

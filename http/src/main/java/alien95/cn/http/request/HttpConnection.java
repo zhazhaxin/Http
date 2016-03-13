@@ -106,7 +106,6 @@ public class HttpConnection {
             urlConnection.connect();
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
-
             //请求失败
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();

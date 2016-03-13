@@ -29,12 +29,12 @@ public class DiskCache {
 
     private DiskCache() {
         try {
-            File cacheDir = Utils.setDiskCacheDir(IMAGE_CACHE_PATH);
+            File cacheDir = Utils.getDiskCacheDir(IMAGE_CACHE_PATH);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
-            //20MB硬盘缓存
-            diskLruCache = DiskLruCache.open(cacheDir, Utils.getAppVersion(), 1, 30 * 1024 * 1024);
+            //50MB硬盘缓存
+            diskLruCache = DiskLruCache.open(cacheDir, Utils.getAppVersion(), 1, 50 * 1024 * 1024);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,6 +70,7 @@ public class DiskCache {
                     if (editor != null) {
                         OutputStream outputStream = editor.newOutputStream(0);
                         boolean success = mBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                        outputStream.close();
                         if (success) {
                             editor.commit();
                         } else {

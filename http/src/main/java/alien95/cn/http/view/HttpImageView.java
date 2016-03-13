@@ -91,6 +91,32 @@ public class HttpImageView extends ImageView {
         });
     }
 
+    /**
+     * 设置图片压缩
+     * @param url
+     * @param reqWidth
+     * @param reqHeight
+     */
+    public void setImageUrlWithCompress(String url,int reqWidth,int reqHeight){
+        if (loadImageId != -1) {
+            setImageResource(loadImageId);
+        }
+        HttpRequestImage.getInstance().requestImageWithCompress(url, reqWidth, reqHeight,new ImageCallBack() {
+            @Override
+            public void success(Bitmap bitmap) {
+                setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void failure() {
+                if (failedImageId != -1)
+                    setImageResource(failedImageId);
+            }
+        });
+    }
+
+
+
     public void setInSimpleSize(int inSimpleSize) {
         this.inSimpleSize = inSimpleSize;
     }
