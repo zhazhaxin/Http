@@ -24,10 +24,14 @@ public class HttpRequestImage {
 
     private final String TAG = "HttpRequestImage";
 
+    private MemoryCache memoryCache;
+    private DiskCache diskCache;
     private static HttpRequestImage instance;
     private Handler handler;
 
     private HttpRequestImage() {
+        memoryCache = new MemoryCache();
+        diskCache = new DiskCache();
         handler = new Handler();
     }
 
@@ -54,11 +58,11 @@ public class HttpRequestImage {
      * @param callBack 回调接口
      */
     public void requestImage(final String url, final ImageCallBack callBack) {
-        if (loadImageFromMemory(url) != null) {
+        if (memoryCache.getBitmapFromCache(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
-            callBack.success(loadImageFromMemory(url));
+            callBack.success(memoryCache.getBitmapFromCache(url));
         } else {
-            loadImageFromDisk(url, new DiskCallback() {
+            diskCache.getBitmapFromCacheAsync(url, new DiskCallback() {
                 @Override
                 public void callback(Bitmap bitmap) {
                     if (bitmap != null) {
@@ -86,11 +90,11 @@ public class HttpRequestImage {
             requestImage(url, callBack);
             return;
         }
-        if (loadImageFromMemory(url + inSampleSize) != null) {
+        if (memoryCache.getBitmapFromCache(url + inSampleSize) != null) {
             Log.i(TAG, "Compress Get Picture from memoryCache");
-            callBack.success(loadImageFromMemory(url + inSampleSize));
+            callBack.success(memoryCache.getBitmapFromCache(url + inSampleSize));
         } else {
-            loadImageFromDisk(url + inSampleSize, new DiskCallback() {
+            diskCache.getBitmapFromCacheAsync(url + inSampleSize, new DiskCallback() {
                 @Override
                 public void callback(Bitmap bitmap) {
                     if (bitmap != null) {
@@ -116,11 +120,11 @@ public class HttpRequestImage {
      */
     public synchronized void requestImageWithCompress(final String url, final int reqWidth, final int reqHeight, final ImageCallBack callBack) {
         String key = url + reqWidth + reqHeight;
-        if (loadImageFromMemory(key) != null) {
+        if (memoryCache.getBitmapFromCache(key) != null) {
             Log.i(TAG, "Compress Get Picture from memoryCache");
-            callBack.success(loadImageFromMemory(key));
+            callBack.success(memoryCache.getBitmapFromCache(key));
         } else {
-            loadImageFromDisk(key, new DiskCallback() {
+            diskCache.getBitmapFromCacheAsync(key, new DiskCallback() {
                 @Override
                 public void callback(Bitmap bitmap) {
                     if (bitmap != null) {
@@ -134,27 +138,6 @@ public class HttpRequestImage {
             });
         }
 
-    }
-
-
-    /**
-     * 从内存缓存中获取已经从网络获取过的图片
-     *
-     * @param key
-     * @return
-     */
-    public Bitmap loadImageFromMemory(String key) {
-        return MemoryCache.getInstance().getBitmapFromMemCache(key);
-    }
-
-    /**
-     * 从硬盘缓存中读取图片
-     *
-     * @param imageUrl
-     * @param callback
-     */
-    public void loadImageFromDisk(String imageUrl, DiskCallback callback) {
-        DiskCache.getInstance().readImageFromDisk(imageUrl, callback);
     }
 
     public HttpURLConnection getHttpUrlConnection(String url) {
@@ -197,8 +180,8 @@ public class HttpRequestImage {
                             public void run() {
                                 callBack.success(bitmap);
                                 if (bitmap != null) {
-                                    MemoryCache.getInstance().putBitmapToCache(url, bitmap);
-                                    DiskCache.getInstance().writeImageToDisk(url, bitmap);
+                                    memoryCache.putBitmapToCache(url, bitmap);
+                                    diskCache.putBitmapToCache(url, bitmap);
                                 }
 
                             }
@@ -235,8 +218,8 @@ public class HttpRequestImage {
                             public void run() {
                                 callBack.success(compressBitmap);
                                 if (compressBitmap != null) {
-                                    MemoryCache.getInstance().putBitmapToCache(url + inSampleSize, compressBitmap);
-                                    DiskCache.getInstance().writeImageToDisk(url + inSampleSize, compressBitmap);
+                                    memoryCache.putBitmapToCache(url + inSampleSize, compressBitmap);
+                                    diskCache.putBitmapToCache(url + inSampleSize, compressBitmap);
                                 }
                             }
                         });
@@ -278,8 +261,8 @@ public class HttpRequestImage {
                             public void run() {
                                 callBack.success(compressBitmap);
                                 if (compressBitmap != null) {
-                                    MemoryCache.getInstance().putBitmapToCache(url + reqWidth + reqHeight, compressBitmap);
-                                    DiskCache.getInstance().writeImageToDisk(url + reqWidth + reqHeight, compressBitmap);
+                                    memoryCache.putBitmapToCache(url + reqWidth + reqHeight, compressBitmap);
+                                    diskCache.putBitmapToCache(url + reqWidth + reqHeight, compressBitmap);
                                 }
                             }
                         });

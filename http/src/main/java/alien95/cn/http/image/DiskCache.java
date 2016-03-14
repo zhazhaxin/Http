@@ -6,8 +6,6 @@ import android.os.Handler;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +18,13 @@ import alien95.cn.http.util.Utils;
 /**
  * Created by linlongxin on 2015/12/29.
  */
-public class DiskCache {
+public class DiskCache implements ImageCache {
 
     private final String IMAGE_CACHE_PATH = "IMAGE_CACHE";
     private DiskLruCache diskLruCache;
-    private static DiskCache instance;
     private Handler handler = new Handler();
 
-    private DiskCache() {
+    public DiskCache() {
         try {
             File cacheDir = Utils.getDiskCacheDir(IMAGE_CACHE_PATH);
             if (!cacheDir.exists()) {
@@ -40,28 +37,13 @@ public class DiskCache {
         }
     }
 
-    public static DiskCache getInstance() {
-        if (instance == null) {
-            synchronized (DiskCache.class) {
-                if (instance == null)
-                    instance = new DiskCache();
-            }
-        }
-        return instance;
-    }
-
-    /**
-     * 写入缓存到硬盘
-     *
-     * @param imageUrl 图片地址
-     * @param mBitmap
-     */
-    public void writeImageToDisk(String imageUrl, final Bitmap mBitmap) {
+    @Override
+    public void putBitmapToCache(String imageUrl, Bitmap bitmap) {
         final String key = Utils.MD5(imageUrl);
-        readImageFromDisk(imageUrl, new DiskCallback() {
+        getBitmapFromCacheAsync(imageUrl, new DiskCallback() {
             @Override
             public void callback(Bitmap bitmap) {
-                if (bitmap != null) {
+                if (bitmap == null) {
                     return;
                 }
                 DiskLruCache.Editor editor;
@@ -69,7 +51,7 @@ public class DiskCache {
                     editor = diskLruCache.edit(key);
                     if (editor != null) {
                         OutputStream outputStream = editor.newOutputStream(0);
-                        boolean success = mBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                        boolean success = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                         outputStream.close();
                         if (success) {
                             editor.commit();
@@ -82,16 +64,21 @@ public class DiskCache {
                 }
             }
         });
+    }
 
-
+    @Override
+    public Bitmap getBitmapFromCache(String key) {
+        return null;
     }
 
     /**
-     * 读取硬盘缓存
+     * 从硬盘异步获取bitmap
      *
-     * @param imageUrl 图片地址
+     * @param imageUrl
+     * @param callback
      */
-    public void readImageFromDisk(String imageUrl, final DiskCallback callback) {
+    @Override
+    public void getBitmapFromCacheAsync(String imageUrl, final DiskCallback callback) {
         final String key = Utils.MD5(imageUrl);
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
@@ -120,33 +107,5 @@ public class DiskCache {
                 }
             }
         });
-    }
-
-    /**
-     * 读取输入流到硬盘
-     *
-     * @param outputStream
-     * @return
-     */
-    public boolean loadImageToStream(InputStream in, OutputStream outputStream) {
-        BufferedOutputStream out;
-        BufferedInputStream inputStream = new BufferedInputStream(in, 24 * 1024);
-        try {
-            out = new BufferedOutputStream(outputStream, 8 * 1024);
-            byte[] buffer = new byte[1024 * 8];
-            while (inputStream.read(buffer, 0, buffer.length) != -1) {
-                out.write(buffer);
-            }
-            return true;
-        } catch (final IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
     }
 }
