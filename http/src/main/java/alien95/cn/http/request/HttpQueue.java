@@ -11,7 +11,6 @@ import alien95.cn.http.util.Utils;
  */
 public class HttpQueue {
     private LinkedBlockingDeque<Runnable> requestQueue;
-    private static HttpQueue instance;
     private ExecutorService threadPool; //线程池
 
     private HttpQueue() {
@@ -23,15 +22,12 @@ public class HttpQueue {
 
     }
 
+    private static class HttpQueueHolder{
+        private static final HttpQueue instance= new HttpQueue();
+    }
+
     public static HttpQueue getInstance() {
-        if (instance == null) {
-            synchronized (HttpQueue.class) {
-                if (instance == null) {
-                    instance = new HttpQueue();
-                }
-            }
-        }
-        return instance;
+        return HttpQueueHolder.instance;
     }
 
     public void addQuest(Runnable runnable) {
