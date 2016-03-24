@@ -1,6 +1,6 @@
 ##基于HttpUrlConnection网络框架
 
--### 本仓库不再更新，项目迁移至[RestHttp](https://github.com/llxdaxia/RestHttp),欢迎一起学习
+### 本仓库不再更新，项目迁移至[RestHttp](https://github.com/llxdaxia/RestHttp),欢迎一起学习
 
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
     
