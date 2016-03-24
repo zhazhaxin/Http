@@ -61,7 +61,7 @@ public class RestHttpRequest {
                                     /**
                                      * 任务加入线程池
                                      */
-                                    Future result = RestHttpQueue.getInstance().addQuest(new Callable<Object>() {
+                                    Future result = RestThreadPool.getInstance().addQuest(new Callable<Object>() {
                                         @Override
                                         public Object call() throws Exception {
                                             return RestHttpConnection.getInstance().quest(finalUrl.toString(), HttpConnection.RequestType.GET,null,method.getReturnType());
@@ -88,7 +88,7 @@ public class RestHttpRequest {
                                 /**
                                  * 任务加入线程池
                                  */
-                                Future result = RestHttpQueue.getInstance().addQuest(new Callable() {
+                                Future result = RestThreadPool.getInstance().addQuest(new Callable() {
                                     @Override
                                     public Object call() throws Exception {
                                         return RestHttpConnection.getInstance().quest(Builder.baseUrl + ((POST) methodAnnotation).value(), HttpConnection.RequestType.POST,params,method.getReturnType());
@@ -97,10 +97,12 @@ public class RestHttpRequest {
                                 returnObject = result.get();
                             }
                         }
-                        return returnObject; //执行的是方法的返回值，如果方法是void，则返回null（默认）
+                        /**
+                         * 执行的方法的返回值，如果方法是void，则返回null（默认）
+                         */
+                        return returnObject;
                     }
                 });
-
 
         return object;
     }

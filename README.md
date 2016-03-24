@@ -2,7 +2,7 @@
 
 - 依赖
 
-        compile 'cn.alien95:http:1.1.4'
+        compile 'cn.alien95:http:1.1.5'
 
 - 初始化：设置是否开启调试模式（默认关闭）,设置网络请求Log输出Tag
     
@@ -12,6 +12,36 @@
                 }
 
 - GET,POST请求
+
+一，面向接口
+
+        在接口中写好API
+
+        public interface ServiceAPI {
+        
+            @POST("/v1/users/login.php")
+            UserInfo login(@Field("name")
+                       String name,
+                           @Field("password")
+                       String password);
+        }
+        
+java代码
+
+        RestHttpRequest restHttpRequest = new RestHttpRequest.Builder()
+                        .baseUrl(BASE_URL)
+                        .build();
+        
+                final ServiceAPI serviceAPI = (ServiceAPI) restHttpRequest.create(ServiceAPI.class);
+        
+                UserInfo userInfo = serviceAPI.login("alien95", "123456");
+                serviceAPI.login("alien", "123456");
+                serviceAPI.login("Lemon", "123456");
+                serviceAPI.login("Lemon95", "123456");
+        
+                post.setText(userInfo.getName() + " --- " + userInfo.getFace());
+
+其他请求方式：
 
 (1)get请求：
 

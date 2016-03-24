@@ -104,7 +104,6 @@ public class HttpConnection {
                 }
             }
 
-            //POST请求参数：因为POST请求的参数在写在流里面
             if (type.equals(RequestType.POST)) {
                 OutputStream ops = urlConnection.getOutputStream();
                 ops.write(paramStr.getBytes());
@@ -112,17 +111,23 @@ public class HttpConnection {
                 ops.close();
             }
 
-            //对HttpURLConnection对象的一切配置都必须要在connect()函数执行之前完成。
+            /**
+             * 对HttpURLConnection对象的一切配置都必须要在connect()函数执行之前完成。
+             */
             urlConnection.connect();
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
-            //请求失败
+            /**
+             * 请求失败
+             */
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();
                 final int finalRespondCode = respondCode;
                 final String info = readInputStream(in);
                 in.close();
-                //回调：错误信息返回主线程
+                /**
+                 * 打印错误日志
+                 */
                 handler.post(new Runnable() {
                     @Override
                     public void run() {

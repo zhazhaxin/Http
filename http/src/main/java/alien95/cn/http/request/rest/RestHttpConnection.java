@@ -57,7 +57,7 @@ public class RestHttpConnection {
      * @param type     请求方式{POST,GET}
      * @param param    请求的参数，HashMap键值对的形式
      */
-    protected synchronized <T> T quest(String url, HttpConnection.RequestType type, Map<String, String> param,Class<T> returnType) {
+    protected synchronized<T>  T quest(String url, HttpConnection.RequestType type, Map<String, String> param,Class<T> returnType) {
 
         logUrl = url;
         final int respondCode;
@@ -96,7 +96,6 @@ public class RestHttpConnection {
                 }
             }
 
-            //POST请求参数：因为POST请求的参数在写在流里面
             if (type.equals(HttpConnection.RequestType.POST)) {
                 OutputStream ops = urlConnection.getOutputStream();
                 ops.write(paramStr.getBytes());
@@ -104,7 +103,9 @@ public class RestHttpConnection {
                 ops.close();
             }
 
-            //对HttpURLConnection对象的一切配置都必须要在connect()函数执行之前完成。
+            /**
+             * 对HttpURLConnection对象的一切配置都必须要在connect()函数执行之前完成。
+             */
             urlConnection.connect();
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
@@ -115,7 +116,7 @@ public class RestHttpConnection {
                 in = urlConnection.getErrorStream();
                 final String info = readInputStream(in);
                 in.close();
-                //回调：错误信息返回主线程
+                //错误日志
                 if(DebugUtils.isDebug){
                     DebugUtils.responseLog(respondCode + info, requestTime);
                 }
@@ -139,7 +140,7 @@ public class RestHttpConnection {
 
         } catch (final IOException e1) {
             e1.printStackTrace();
-            DebugUtils.responseLog("抛出异常：" + e1.getMessage(), requestTime);
+            DebugUtils.responseLog(NO_NETWORK + "抛出异常：" + e1.getMessage(), requestTime);
         }
         return null;
     }
