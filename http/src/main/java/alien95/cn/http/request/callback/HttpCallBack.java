@@ -15,12 +15,12 @@ public abstract class HttpCallBack {
 
     }
 
-    public void getRequestTimes(int responseCode, String info, int requestNum) {
+    public void logNetworkInfo(int responseCode, String info, int requestNum) {
         if (DebugUtils.isDebug)
             DebugUtils.responseLog(responseCode + "\n" + info, requestNum);
     }
 
-    public void getRequestTimes(String info, int requestNum) {
+    public void logNetworkInfo(String info, int requestNum) {
         if (DebugUtils.isDebug)
             DebugUtils.responseLog(info, requestNum);
     }

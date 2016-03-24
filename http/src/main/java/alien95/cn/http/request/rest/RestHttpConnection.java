@@ -1,6 +1,6 @@
-package alien95.cn.http.request;
+package alien95.cn.http.request.rest;
 
-import android.os.Handler;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,43 +13,34 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import alien95.cn.http.request.callback.HttpCallBack;
+import alien95.cn.http.request.HttpConnection;
 import alien95.cn.http.util.DebugUtils;
 
-
 /**
- * Created by linlongxin on 2015/12/26.
+ * Created by linlongxin on 2016/3/24.
  */
-public class HttpConnection {
+public class RestHttpConnection {
 
+    private static final String TAG = "RestHttpConnection";
     public static final int NO_NETWORK = 999;
-    private static HttpConnection instance;
+    private static RestHttpConnection instance;
     private HttpURLConnection urlConnection;
-    private Handler handler = new Handler();
     private Map<String, String> header;
     private String logUrl;
 
-    private HttpConnection() {
+    private RestHttpConnection() {
     }
 
-    protected static HttpConnection getInstance() {
+    protected static RestHttpConnection getInstance() {
         if (instance == null) {
             synchronized (HttpConnection.class) {
                 if (instance == null)
-                    instance = new HttpConnection();
+                    instance = new RestHttpConnection();
             }
         }
         return instance;
     }
 
-    public enum RequestType {
-        GET("GET"), POST("POST");
-        private String requestType;
-
-        RequestType(String type) {
-            this.requestType = type;
-        }
-    }
 
     /**
      * 设置请求头header
@@ -65,15 +56,14 @@ public class HttpConnection {
      *
      * @param type     请求方式{POST,GET}
      * @param param    请求的参数，HashMap键值对的形式
-     * @param callback 请求返回的回调
      */
-    protected synchronized void quest(String url, RequestType type, Map<String, String> param, final HttpCallBack callback) {
+    protected synchronized <T> T quest(String url, HttpConnection.RequestType type, Map<String, String> param,Class<T> returnType) {
 
         logUrl = url;
         final int respondCode;
 
         /**
-         * 只有POST才会有参数
+         * 只有POST请求才应该有参数
          */
         String paramStr = "";
         if (param != null) {
@@ -86,10 +76,12 @@ public class HttpConnection {
             }
         }
         logUrl += paramStr;
+
         /**
-         * 打印网络请求日志
+         * 打印网络请求日志日志
          */
-        final int requestTime = DebugUtils.requestLog(logUrl);
+        int requestTime = DebugUtils.requestLog(logUrl);
+
         try {
             urlConnection = (HttpURLConnection) new URL(url).openConnection();
             urlConnection.setDoOutput(true);
@@ -105,7 +97,7 @@ public class HttpConnection {
             }
 
             //POST请求参数：因为POST请求的参数在写在流里面
-            if (type.equals(RequestType.POST)) {
+            if (type.equals(HttpConnection.RequestType.POST)) {
                 OutputStream ops = urlConnection.getOutputStream();
                 ops.write(paramStr.getBytes());
                 ops.flush();
@@ -116,49 +108,40 @@ public class HttpConnection {
             urlConnection.connect();
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
-            //请求失败
+            /**
+             * 请求失败
+             */
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();
-                final int finalRespondCode = respondCode;
                 final String info = readInputStream(in);
                 in.close();
                 //回调：错误信息返回主线程
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.failure(finalRespondCode, info);
-                            callback.logNetworkInfo(respondCode, info, requestTime);
-                        }
-                    }
-                });
-                return;
+                if(DebugUtils.isDebug){
+                    DebugUtils.responseLog(respondCode + info, requestTime);
+                }
+
+                return null;
             } else {
+                /**
+                 * 请求成功
+                 */
                 final String result = readInputStream(in);
                 in.close();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.success(result);
-                            callback.logNetworkInfo(respondCode, result, requestTime);
-                        }
-                    }
-                });
+
+                if(DebugUtils.isDebug){
+                    DebugUtils.responseLog(respondCode + "\n" + result,requestTime);
+                }
+
+                Gson gson = new Gson();
+                T object = gson.fromJson(result,returnType);
+                return object;
             }
 
         } catch (final IOException e1) {
             e1.printStackTrace();
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (callback != null) {
-                        callback.failure(NO_NETWORK, "抛出异常,没有连接网络");
-                        callback.logNetworkInfo("抛出异常：" + e1.getMessage(), requestTime);
-                    }
-                }
-            });
+            DebugUtils.responseLog("抛出异常：" + e1.getMessage(), requestTime);
         }
+        return null;
     }
 
     /**
@@ -183,6 +166,4 @@ public class HttpConnection {
 
         return result;
     }
-
-
 }
