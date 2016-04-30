@@ -1,4 +1,4 @@
-##基于HttpUrlConnection网络框架
+##基于HttpURLConnection网络框架
 
 ### 本仓库不再更新，项目迁移至[RestHttp](https://github.com/llxdaxia/RestHttp)，欢迎一起学习。
 
