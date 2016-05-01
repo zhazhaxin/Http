@@ -111,8 +111,6 @@ java代码
         
 ###Demo  
 
-[美图APP](https://github.com/llxdaxia/Mito)
-
 GET，POST请求：
 
 <img src="/app/img_get.png" width="320" height="569" alt="GET "/>
